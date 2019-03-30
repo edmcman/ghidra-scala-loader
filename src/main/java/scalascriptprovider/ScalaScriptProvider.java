@@ -19,8 +19,7 @@ import java.io.*;
 import java.util.*;
 
 import scala.collection.JavaConversions;
-import scala.tools.nsc.Global;
-import scala.tools.nsc.Settings;
+import scala.tools.nsc.MainClass;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -211,27 +210,19 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 			GhidraScriptUtil.getScriptCompileOutputDirectory(sourceFile).getAbsolutePath();
 		Msg.trace(this, "Compiling script " + sourceFile + " to dir " + outputDirectory);
 
-                Settings s = new Settings();
-                List<String> options = new ArrayList<String>();
-                options.add("-g:source");
-                options.add("-d");
-                options.add(outputDirectory);
-                options.add("-sourcepath");
-                options.add(getSourcePath());
-                options.add("-classpath");
-                options.add(getClassPath());
-                //options.add("-proc:none"); // Prevents warning when script imports something that will get compiled
-                s.processArguments (JavaConversions.asScalaBuffer(options).toList (), true);
+                //Settings s = new Settings();
+                MainClass d = new MainClass ();
+                List<String> args = new ArrayList<String>();
+                args.add("-g:source");
+                args.add("-d");
+                args.add(outputDirectory);
+                args.add("-sourcepath");
+                args.add(getSourcePath());
+                args.add("-classpath");
+                args.add(getClassPath());
+                args.add(sourceFile.getAbsolutePath ());
 
-                Global g = new Global(s);
-                Global.Run run = g.new Run();
-                List<String> fileNames = new ArrayList<String>(Arrays.asList(sourceFile.getAbsolutePath ()));
-
-                run.compile(JavaConversions.asScalaBuffer(fileNames).toList());
-
-                // XXX: How do we detect when compilation fails?
-
-                return true;
+                return d.process (args.toArray (new String[0]));
 	}
 
 	private List<Class<?>> getParentClasses(ResourceFile scriptSourceFile) {
