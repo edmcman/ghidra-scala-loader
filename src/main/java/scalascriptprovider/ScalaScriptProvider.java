@@ -29,7 +29,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 	private final BundleHost bundleHost;
 
 	/**
-	 * Create a new {@link JavaScriptProvider} associated with the current bundle host used by scripting.
+	 * Create a new {@link ScalaScriptProvider} associated with the current bundle host used by scripting.
 	 */
 	public ScalaScriptProvider() {
 		bundleHost = GhidraScriptUtil.getBundleHost();
@@ -51,12 +51,12 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 
 	@Override
 	public String getDescription() {
-		return "Java";
+		return "Scala";
 	}
 
 	@Override
 	public String getExtension() {
-		return ".java";
+		return ".scala";
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 			}
 		}
 		catch (GhidraBundleException e) {
-			Msg.error(this, "Error while deactivating bundle for delete", e);
+                        Msg.error(this, "Error while deactivating bundle for delete", e);
 			return false;
 		}
 		return super.deleteScript(sourceFile);
