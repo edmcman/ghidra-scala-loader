@@ -9,20 +9,20 @@ scripts written in Scala.  Just make sure their filename ends in
 
 If you want to build the extension yourself, make sure you have
 `gradle` installed, and then run
-`GHIDRA_INSTALL_DIR=/path/to/ghidra_9.0.1 gradle buildExtension`.  If
+`GHIDRA_INSTALL_DIR=/path/to/ghidra_9.2 gradle buildExtension`.  If
 all goes well, you should get a message like:
 
 ```
 > Task :buildExtension
 
-Created ghidra_9.0.1_PUBLIC_20190330_ScalaScriptProvider.zip in /media/data-linux/ghidra_9.0.1/Extensions/Ghidra/ScalaScriptProvider/dist
+Created ghidra_9.2_PUBLIC_20201117_ghidra-scala-loader.zip in /home/ed/Documents/ghidra-scala-loader/dist
 
 BUILD SUCCESSFUL in 11s
 4 actionable tasks: 1 executed, 3 up-to-date
 ```
 
 In this case, the file
-`dist/ghidra_9.0.1_PUBLIC_20190330_ScalaScriptProvider.zip` is your
+`dist/ghidra_9.2_PUBLIC_20201117_ghidra-scala-loader.zip` is your
 newly built extension.
 
 # Installation #
