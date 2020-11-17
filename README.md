@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/edmcman/ghidra-scala-loader/_apis/build/status/edmcman.ghidra-scala-loader?branchName=master)](https://dev.azure.com/edmcman/ghidra-scala-loader/_build/latest?definitionId=4&branchName=master)
+
 # Introduction #
 
 Love ghidra but hate Java?  If so, then this extension is for you!
