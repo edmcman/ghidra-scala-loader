@@ -32,3 +32,32 @@ else {
 }
 //----------------------END "DO NOT MODIFY" SECTION-------------------------------
 
+task copyZip(type: Copy) {
+    from "$buildExtension.destinationDir/$buildExtension.baseName.$buildExtension.extension"
+    into ghidraInstallDir + '/Extensions/Ghidra'
+}
+copyZip.dependsOn(buildExtension)
+
+task installZip(type: Exec) {
+    group = "Installation"
+    description = "Installs the zip package in installed Ghidra's default extension directory"
+    //title = "Install zip"
+
+    workingDir ghidraInstallDir + '/Ghidra/Extensions'
+    commandLine 'unzip', '-o', "$buildExtension.destinationDir/$buildExtension.baseName.$buildExtension.extension" 
+}
+installZip.dependsOn(copyZip)
+
+task install() {
+     dependsOn installZip
+
+     group = "Installation"
+     description = "Alternate name for installZip task"
+     //title = "Install zip"
+
+     doLast {
+       // Empty action list
+       logger.quiet("Installed zip!")
+     }
+}
+
