@@ -4,8 +4,8 @@ jobs:
     GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
   strategy:
     matrix:
-      ghidra-git:
-        ghidraVersion: "master"
+      # ghidra-git:
+      #   ghidraVersion: "master"
       ghidra92:
         ghidraUrl: "https://ghidra-sre.org/ghidra_9.2_PUBLIC_20201113.zip"
         ghidraVersion: "9.2"
