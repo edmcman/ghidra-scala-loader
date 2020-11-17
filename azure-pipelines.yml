@@ -77,37 +77,37 @@ jobs:
     env:
       WS: $(Pipeline.Workspace)
   - script: gradle --stop
-  # - publish: tools/ooanalyzer/ghidra/OOAnalyzerPlugin/dist/
-  # - task: GitHubRelease@0
-  #   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
-  #   inputs:
-  #     gitHubConnection: gh
-  #     repositoryName: $(Build.Repository.Name)
-  #     action: delete
-  #     tagSource: manual
-  #     tag: ghidra-$(ghidraVersion)
-  #   continueOnError: true
-  # - task: DownloadSecureFile@1
-  #   condition: eq(variables['Build.SourceBranchName'], 'master')
-  #   name: deployKey
-  #   inputs:
-  #     secureFile: 'deploy.key'
-  # - bash: |
-  #     mkdir -p ~/.ssh
-  #     ssh-keyscan github.com >> ~/.ssh/known_hosts
-  #     ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-  #     chmod og-r $(deployKey.secureFilePath)
-  #     ssh-add $(deployKey.secureFilePath)
-  #     git config --global user.email "eschwartz@cert.org"
-  #     git config --global user.name "sei-eschwartz"
-  #     git remote add ssh-origin git@github.com:sei-eschwartz/pharos.git
-  #     git push --delete ssh-origin ghidra-$(ghidraVersion)
-  #     rm -f $(deployKey.secureFilePath)
-  #   condition: eq(variables['Build.SourceBranchName'], 'master')
-  #   env:
-  #     SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-  #   continueOnError: true
-  #   displayName: Delete old git tag ghidra-$(ghidraVersion)
+  - publish: dist/
+  - task: GitHubRelease@0
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+    inputs:
+      # gitHubConnection: gh
+      repositoryName: $(Build.Repository.Name)
+      action: delete
+      tagSource: manual
+      tag: ghidra-$(ghidraVersion)
+    continueOnError: true
+  - task: DownloadSecureFile@1
+    condition: eq(variables['Build.SourceBranchName'], 'master')
+    name: deployKey
+    inputs:
+      secureFile: 'deploy.key'
+  - bash: |
+      mkdir -p ~/.ssh
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
+      ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+      chmod og-r $(deployKey.secureFilePath)
+      ssh-add $(deployKey.secureFilePath)
+      git config --global user.email "eschwartz@cert.org"
+      git config --global user.name "sei-eschwartz"
+      git remote add ssh-origin git@github.com:edmcman/ghidra-scala-loader.git
+      git push --delete ssh-origin ghidra-$(ghidraVersion)
+      rm -f $(deployKey.secureFilePath)
+    condition: eq(variables['Build.SourceBranchName'], 'master')
+    env:
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+    continueOnError: true
+    displayName: Delete old git tag ghidra-$(ghidraVersion)
   # - task: GitHubRelease@0
   #   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
   #   inputs:
