@@ -64,38 +64,43 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
   }
 
   @Override
-  public GhidraScript getScriptInstance(ResourceFile sourceFile, PrintWriter writer)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public GhidraScript getScriptInstance(ResourceFile sourceFile, PrintWriter writer) throws GhidraScriptLoadException {
 
     if (writer == null) {
       writer = new NullPrintWriter();
     }
 
-    compile(sourceFile, writer); // may throw an exception
-
-    Class<?> clazz = null;
     try {
-      clazz = getScriptClass(sourceFile);
-    }
-    catch (GhidraScriptUnsupportedClassVersionError e) {
-      // Unusual Code Alert!: This implies the script was compiled in a newer
-      // version of Java.  So, just delete the class file and try again.
-      ResourceFile classFile = e.getClassFile();
-      classFile.delete();
-      return getScriptInstance(sourceFile, writer);
-    }
+      compile(sourceFile, writer);
 
-    Object object = clazz.newInstance();
-    if (object instanceof GhidraScript) {
-      GhidraScript script = (GhidraScript) object;
-      script.setSourceFile(sourceFile);
-      return script;
-    }
+      Class<?> clazz = getScriptClass(sourceFile);
+  
+			if (GhidraScript.class.isAssignableFrom(clazz)) {
+				GhidraScript script = (GhidraScript) clazz.getDeclaredConstructor().newInstance();
+				script.setSourceFile(sourceFile);
+				return script;
+			}
 
-    String message = "Not a valid Ghidra script: " + sourceFile.getName();
-    writer.println(message);
-    Msg.error(this, message); // the writer may not be the same as Msg, so log it too
-    return null; // class is not a script
+      throw new GhidraScriptLoadException(
+				"Ghidra scripts in Java must extend " + GhidraScript.class.getName() + ". " +
+					sourceFile.getName() + " does not.");  
+    }
+		catch (ClassNotFoundException e) {
+			throw new GhidraScriptLoadException("The class could not be found. " +
+				"It must be the public class of the .java file: " + e.getMessage(), e);
+		}
+		catch (NoClassDefFoundError e) {
+			throw new GhidraScriptLoadException("The class could not be found or loaded, " +
+				"perhaps due to a previous initialization error: " + e.getMessage(), e);
+		}
+		catch (ExceptionInInitializerError e) {
+			throw new GhidraScriptLoadException(
+				"Error during class initialization: " + e.getException(), e.getException());
+		}
+		catch (Exception e) {
+			throw new GhidraScriptLoadException("Unexpected error: " + e);
+		}
+
   }
 
   /**

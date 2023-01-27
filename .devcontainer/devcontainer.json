@@ -21,6 +21,13 @@
 
 	"remoteEnv": {
 		"GHIDRA_INSTALL_DIR": "/workspaces/ghidra-scala-loader/ghidra_10.2.2_PUBLIC"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack"
+			]
+		}
 	}
 
 	// Configure tool-specific properties.
