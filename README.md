@@ -42,3 +42,7 @@ and under the `Window` menu, select `Script Manager`.  If all is well,
 you should see a `HelloWorld.scala` script.  Right click it, and
 select `Run`.  You should see the hello world message print out to the
 Console.
+
+# Versions #
+
+Now supports Ghidra 10.2.2.
