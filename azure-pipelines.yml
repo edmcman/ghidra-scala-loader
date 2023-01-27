@@ -9,9 +9,6 @@ jobs:
       ghidra1022:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.2.2_build/ghidra_10.2.2_PUBLIC_20221115.zip"
         ghidraVersion: "10.2.2"
-      ghidra92:
-        ghidraUrl: "https://ghidra-sre.org/ghidra_9.2_PUBLIC_20201113.zip"
-        ghidraVersion: "9.2"
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
