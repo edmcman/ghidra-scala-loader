@@ -60,7 +60,7 @@ jobs:
     condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
 
   - bash: |
-      set -e
+      set -ex
       cd ghidra
       gradle --build-cache --init-script gradle/support/fetchDependencies.gradle init
       gradle --build-cache buildGhidra
