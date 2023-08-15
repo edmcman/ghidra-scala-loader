@@ -33,7 +33,7 @@ else {
 //----------------------END "DO NOT MODIFY" SECTION-------------------------------
 
 task copyZip(type: Copy) {
-    from "$buildExtension.destinationDir/$buildExtension.baseName.$buildExtension.extension"
+    from "$buildExtension.destinationDirectory/$buildExtension.archiveBaseName.$buildExtension.archiveExtension"
     into ghidraInstallDir + '/Extensions/Ghidra'
 }
 copyZip.dependsOn(buildExtension)
@@ -44,7 +44,7 @@ task installZip(type: Exec) {
     //title = "Install zip"
 
     workingDir ghidraInstallDir + '/Ghidra/Extensions'
-    commandLine 'unzip', '-o', "$buildExtension.destinationDir/$buildExtension.baseName.$buildExtension.extension" 
+    commandLine 'unzip', '-o', "$buildExtension.destinationDirectory/$buildExtension.archiveBaseName.$buildExtension.archiveExtension" 
 }
 installZip.dependsOn(copyZip)
 
