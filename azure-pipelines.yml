@@ -9,6 +9,9 @@ jobs:
       ghidra1022:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.2.2_build/ghidra_10.2.2_PUBLIC_20221115.zip"
         ghidraVersion: "10.2.2"
+      ghidra1032:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
+        ghidraVersion: "10.3.2"
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
@@ -57,7 +60,7 @@ jobs:
     condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
 
   - bash: |
-      set -e
+      set -ex
       cd ghidra
       gradle --build-cache --init-script gradle/support/fetchDependencies.gradle init
       gradle --build-cache buildGhidra
@@ -71,7 +74,7 @@ jobs:
       WS: $(Pipeline.Workspace)
     displayName: Download and build Ghidra from git part 2
   - bash: |
-      set -e
+      set -ex
       GHIDRA_INSTALL_DIR=$(find $WS -maxdepth 1 -type d -name 'ghidra_*') gradle --build-cache
     displayName: Build Ghidra plugin
     env:
