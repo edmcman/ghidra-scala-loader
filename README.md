@@ -46,3 +46,4 @@ Console.
 # Versions #
 
 - Ghidra 10.2.2
+- Ghidra 10.3.2
