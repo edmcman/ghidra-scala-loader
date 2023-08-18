@@ -1,5 +1,5 @@
-ghidra_10.2.2_PUBLIC
 .gradle
 ghidra*.zip
 *.class
 build
+bin
