@@ -15,6 +15,8 @@
  */
 package ghidra.app.script;
 
+import scalascriptprovider.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -26,6 +28,8 @@ import java.net.URLClassLoader;
 
 import scala.collection.JavaConversions;
 import scala.tools.nsc.MainClass;
+import scala.tools.nsc.Settings;
+import scala.tools.nsc.CompilerCommand;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -146,19 +150,10 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
     String outputDirectory = outputDir(sourceFile).getAbsolutePath();
     Msg.trace(this, "Compiling script " + sourceFile + " to dir " + outputDirectory);
 
-    //Settings s = new Settings();
-    MainClass d = new MainClass ();
-    List<String> args = new ArrayList<String>();
-    args.add("-g:source");
-    args.add("-d");
-    args.add(outputDirectory);
-    args.add("-sourcepath");
-    args.add(getSourcePath());
-    args.add("-classpath");
-    args.add(getClassPath());
-    args.add(sourceFile.getAbsolutePath ());
 
-    return d.process (args.toArray (new String[0]));
+
+    var helper = new ScalaHelper();
+    return helper.compile(msg -> writer.println(msg), outputDirectory, getSourcePath(), getClassPath(), sourceFile.getAbsolutePath());
   }
 
   private List<Class<?>> getParentClasses(ResourceFile scriptSourceFile) {
