@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/edmcman/ghidra-scala-loader/_apis/build/status/edmcman.ghidra-scala-loader?branchName=master)](https://dev.azure.com/edmcman/ghidra-scala-loader/_build/latest?definitionId=4&branchName=master)
+[![Build Status](https://dev.azure.com/edmcman/ghidra-scala-loader/_apis/build/status/edmcman.ghidra-scala-loader?branchName=master)](https://dev.azure.com/edmcman/ghidra-scala-loader/_build/latest?definitionId=4&branchName=master) 
 
 # Introduction #
 
