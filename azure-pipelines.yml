@@ -1,11 +1,18 @@
+schedules:
+- cron: "0 0 * * 0" # This example runs at 00:00 every Sunday (UTC)
+  displayName: "Weekly build"
+  branches:
+    include:
+    - ghidra-git
+  always: true # This will run even if there haven't been any code changes
 jobs:
 - job: Build_Ghidra_Plugin
   variables:
     GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
   strategy:
     matrix:
-      # ghidra-git:
-      #   ghidraVersion: "master"
+      ghidra-git:
+        ghidraVersion: "master"
       ghidra1022:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.2.2_build/ghidra_10.2.2_PUBLIC_20221115.zip"
         ghidraVersion: "10.2.2"
