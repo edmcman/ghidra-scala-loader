@@ -5,20 +5,8 @@
 
 import ghidra.app.decompiler._
 import ghidra.app.script.GhidraScript
-import ghidra.app.services.GraphDisplayBroker
 
-import ghidra.framework.plugintool.PluginTool
-
-import ghidra.util.task.{Task, TaskMonitor}
-import ghidra.util.Msg
-import ghidra.service.graph._
 import ghidra.program.model.pcode._
-import ghidra.app.plugin.core.decompile.actions.{PCodeDfgGraphType, PCodeDfgDisplayOptions}
-
-import ghidra.program.model.pcode.SequenceNumber
-
-import scala.collection.JavaConversions._
-import scala.collection.mutable.HashMap
 
 class FuncParams extends GhidraScript {
 
