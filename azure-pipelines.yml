@@ -71,10 +71,14 @@ jobs:
 
   - task: Cache@2
     inputs:
-      key: 'gradle deps | "$(Agent.OS)" | "$(System.JobDisplayName)" '
-      restoreKeys: gradle deps
+      key: 'ghidra deps | "$(Agent.OS)" | "$(System.JobDisplayName)" '
+      restoreKeys: |
+        ghidra deps | "$(Agent.OS)" | "(System.JobDisplayName)"
+        ghidra deps | "$(Agent.OS)"
+        ghidra deps | "$(System.JobDisplayName)"
+        ghidra deps
       path: $(Pipeline.Workspace)/ghidra/dependencies
-    displayName: Gradle dependencies cache
+    displayName: Ghidra dependencies cache
     condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
 
   - bash: |
