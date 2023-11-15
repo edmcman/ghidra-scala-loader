@@ -73,7 +73,7 @@ jobs:
     inputs:
       key: 'gradle deps | "$(Agent.OS)" | "$(System.JobDisplayName)" '
       restoreKeys: gradle deps
-      path: $(Pipeline.Workspace)/ghidra-git/dependencies
+      path: $(Pipeline.Workspace)/ghidra/dependencies
     displayName: Gradle dependencies cache
     condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
 
