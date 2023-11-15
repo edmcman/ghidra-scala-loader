@@ -45,7 +45,7 @@ jobs:
 
   - task: Cache@2
     inputs:
-      key: 'gradle | "$(Agent.OS)" | "$(System.Job.DisplayName)" '
+      key: 'gradle | "$(Agent.OS)" | "$(System.JobDisplayName)" '
       restoreKeys: gradle
       path: $(GRADLE_USER_HOME)
     displayName: Gradle build cache
