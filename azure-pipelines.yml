@@ -72,7 +72,7 @@ jobs:
   - task: Cache@2
     inputs:
       key: 'gradle deps'
-      path: $(Pipeline.Workspace)/ghidra/build/downloads
+      path: ~/.gradle
     condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
 
   - bash: |
