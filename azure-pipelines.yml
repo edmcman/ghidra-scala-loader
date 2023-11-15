@@ -69,6 +69,14 @@ jobs:
       WS: $(Pipeline.Workspace)
     displayName: Download and build Ghidra from git part 1
 
+  - task: Cache@2
+    inputs:
+      key: 'gradle deps | "$(Agent.OS)" | "$(System.JobDisplayName)" '
+      restoreKeys: gradle deps
+      path: $(Pipeline.Workspace)/ghidra-git/dependencies
+    displayName: Gradle dependencies cache
+    condition: and(succeeded(), eq(variables['ghidraUrl'], ''))
+
   - bash: |
       set -ex
       cd ghidra
