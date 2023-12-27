@@ -65,7 +65,7 @@ task installZip(type: Exec) {
     //title = "Install zip"
 
     workingDir ghidraInstallDir + '/Ghidra/Extensions'
-    commandLine 'unzip', '-o', "$buildExtension.destinationDirectory/$buildExtension.archiveBaseName.$buildExtension.archiveExtension" 
+    commandLine 'unzip', '-o', "${buildExtension.destinationDirectory.get()}/${buildExtension.archiveBaseName.get()}.${buildExtension.archiveExtension.get()}"
 }
 installZip.dependsOn(copyZip)
 
