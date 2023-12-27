@@ -50,3 +50,4 @@ Console.
 - Ghidra 10.3.2
 - Ghidra 10.3.3
 - Ghidra 10.4
+- Ghidra 11.0
