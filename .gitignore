@@ -3,3 +3,4 @@ ghidra*.zip
 *.class
 build
 bin
+.metals/*
