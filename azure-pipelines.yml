@@ -37,6 +37,7 @@ jobs:
       ghidra1102:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.2_build/ghidra_11.0.2_PUBLIC_20240326.zip"
         ghidraVersion: "11.0.2"
+        latest: true
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
