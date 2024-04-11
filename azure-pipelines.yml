@@ -37,7 +37,7 @@ jobs:
       ghidra1102:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.2_build/ghidra_11.0.2_PUBLIC_20240326.zip"
         ghidraVersion: "11.0.2"
-      ghidra1102:
+      ghidra1103:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410.zip"
         ghidraVersion: "11.0.3"
         latest: true
