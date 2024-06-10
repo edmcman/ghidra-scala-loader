@@ -12,7 +12,7 @@ scripts written in Scala.  Just make sure their filename ends in
 
 If you want to build the extension yourself, make sure you have
 `gradle` installed, and then run
-`GHIDRA_INSTALL_DIR=/path/to/ghidra_9.2 gradle buildExtension`.  If
+`GHIDRA_INSTALL_DIR=/path/to/ghidra gradle buildExtension`.  If
 all goes well, you should get a message like:
 
 ```
