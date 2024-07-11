@@ -22,6 +22,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    implementation group: 'org.scala-lang', name: 'scala-compiler', version: '2.12.18'
+}
+
 // Need to compile scala and java jointly so Java class can call ScalaHelper
 // See https://stackoverflow.com/a/23261076/670527
 sourceSets {

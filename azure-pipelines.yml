@@ -43,14 +43,21 @@ jobs:
       ghidra111:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1_build/ghidra_11.1_PUBLIC_20240607.zip"
         ghidraVersion: "11.1"
+      ghidra1111:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1.1_build/ghidra_11.1.1_PUBLIC_20240614.zip"
+        ghidraVersion: "11.1.1"
+      ghidra1112:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1.2_build/ghidra_11.1.2_PUBLIC_20240709.zip"
+        ghidraVersion: "11.1.2"
         latest: true
+        
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
 
   - script: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_17_X64)"
-      echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_17_X64)/bin:$(PATH)"
+      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_21_X64)"
+      echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_21_X64)/bin:$(PATH)"
     displayName: "Set java version"
   - task: Cache@2
     condition: and(succeeded(), ne(variables['ghidraUrl'], ''))
