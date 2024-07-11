@@ -4,3 +4,4 @@ ghidra*.zip
 build
 bin
 .metals/*
+lib/scala-*.jar
