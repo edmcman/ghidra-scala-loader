@@ -13,6 +13,7 @@ jobs:
     matrix:
       ghidra-git:
         ghidraVersion: "master"
+        useJava21: true
       ghidra1022:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.2.2_build/ghidra_10.2.2_PUBLIC_20221115.zip"
         ghidraVersion: "10.2.2"
@@ -58,7 +59,13 @@ jobs:
   - script: |
       echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_21_X64)"
       echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_21_X64)/bin:$(PATH)"
-    displayName: "Set java version"
+    displayName: "Use Java 21"
+    condition: and(succeeded(), variables['useJava21'])
+  - script: |
+      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_17_X64)"
+      echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_17_X64)/bin:$(PATH)"
+    displayName: "Use Java 17"
+    condition: and(succeeded(), not(variables['useJava21']))
   - task: Cache@2
     condition: and(succeeded(), ne(variables['ghidraUrl'], ''))
     inputs:
