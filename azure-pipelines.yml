@@ -3,7 +3,7 @@ schedules:
   displayName: "Weekly build"
   branches:
     include:
-    - ghidra-git
+    - master
   always: true # This will run even if there haven't been any code changes
 jobs:
 - job: Build_Ghidra_Plugin
