@@ -53,6 +53,7 @@ jobs:
       ghidra112:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.2_build/ghidra_11.2_PUBLIC_20240926.zip"
         ghidraVersion: "11.2"
+        useJava21: true
         latest: true
   pool:
     vmImage: 'Ubuntu-22.04'
