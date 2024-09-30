@@ -121,8 +121,7 @@ jobs:
   - bash: |
       set -ex
       cd ghidra
-      gradle --build-cache --init-script gradle/support/fetchDependencies.gradle init
-      echo build
+      gradle --build-cache -I gradle/support/fetchDependencies.gradle
       gradle --build-cache buildGhidra
       mkdir -p $WS/zip
       cp build/dist/*.zip $WS/zip/
