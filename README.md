@@ -48,9 +48,8 @@ Console.
 
 This extension should work with JDK 17 or 21, but the prebuilt Github extensions
 will only work with the JDK version required by the Ghidra version they are
-built for.  (At the moment, this is JDK 17 for all released versions.)  If you
-want to use a different JDK version, you will need to build the extension
-yourself.
+built for.  If you want to use a different JDK version, you will need to build
+the extension yourself.
 
 # Supported Versions #
 
