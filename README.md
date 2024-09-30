@@ -44,6 +44,13 @@ you should see a `HelloWorld.scala` script.  Right click it, and
 select `Run`.  You should see the hello world message print out to the
 Console.
 
+# Requirements #
+
+This extension should work with JDK 17 or 21, but the prebuilt Github extensions
+will only work with the JDK version required by the Ghidra version they are
+built for.  If you want to use a different JDK version, you will need to build
+the extension yourself.
+
 # Supported Versions #
 
 ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fgithub.com%2Fedmcman%2Fghidra-scala-loader%2Fraw%2Fmaster%2Fazure-pipelines.yml&query=%24.jobs%5B0%5D%5B%22strategy%22%5D%5B%22matrix%22%5D%5B%3F(%40.ghidraVersion%20!%3D%20%22master%22)%5D.ghidraVersion&label=Supported%20Ghidra%20versions)

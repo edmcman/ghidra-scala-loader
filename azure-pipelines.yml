@@ -3,7 +3,7 @@ schedules:
   displayName: "Weekly build"
   branches:
     include:
-    - ghidra-git
+    - master
   always: true # This will run even if there haven't been any code changes
 jobs:
 - job: Build_Ghidra_Plugin
@@ -50,8 +50,11 @@ jobs:
       ghidra1112:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.1.2_build/ghidra_11.1.2_PUBLIC_20240709.zip"
         ghidraVersion: "11.1.2"
+      ghidra112:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.2_build/ghidra_11.2_PUBLIC_20240926.zip"
+        ghidraVersion: "11.2"
+        useJava21: true
         latest: true
-        
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
@@ -118,7 +121,7 @@ jobs:
   - bash: |
       set -ex
       cd ghidra
-      gradle --build-cache --init-script gradle/support/fetchDependencies.gradle init
+      gradle --build-cache -I gradle/support/fetchDependencies.gradle
       gradle --build-cache buildGhidra
       mkdir -p $WS/zip
       cp build/dist/*.zip $WS/zip/
