@@ -1,5 +1,5 @@
 [![Build Status](https://dev.azure.com/edmcman/ghidra-scala-loader/_apis/build/status/edmcman.ghidra-scala-loader?branchName=master)](https://dev.azure.com/edmcman/ghidra-scala-loader/_build/latest?definitionId=4&branchName=master) 
-![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fgithub.com%2Fedmcman%2Fghidra-scala-loader%2Fraw%2Fmaster%2Fazure-pipelines.yml&query=%24.jobs%5B0%5D%5B%22strategy%22%5D%5B%22matrix%22%5D%5B%3F(%40.latest)%5D.ghidraVersion&label=Latest%20Ghidra%20version)
+![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Frefs%2Fheads%2Fmaster%2Fazure-pipelines.yml&query=%24.variables%5B'latest_ghidra'%5D&label=Latest%20Ghidra%20version)
 
 # Introduction #
 
@@ -53,4 +53,5 @@ the extension yourself.
 
 # Supported Versions #
 
-![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fgithub.com%2Fedmcman%2Fghidra-scala-loader%2Fraw%2Fmaster%2Fazure-pipelines.yml&query=%24.jobs%5B0%5D%5B%22strategy%22%5D%5B%22matrix%22%5D%5B%3F(%40.ghidraVersion%20!%3D%20%22master%22)%5D.ghidraVersion&label=Supported%20Ghidra%20versions)
+![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Frefs%2Fheads%2Fmaster%2Fazure-pipelines.yml&query=%24.jobs%5B0%5D%5B%22strategy%22%5D%5B%22matrix%22%5D%5B*%5D.ghidraVersion&label=Supported%20Ghidra%20versions)
+
