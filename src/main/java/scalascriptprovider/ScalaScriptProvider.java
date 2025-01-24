@@ -51,7 +51,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 
   static ResourceFile getClassFileByResourceFile(ResourceFile sourceFile, String rawName) {
     String javaAbsolutePath = sourceFile.getAbsolutePath();
-    String classAbsolutePath = javaAbsolutePath.replace(".java", ".class");
+    String classAbsolutePath = javaAbsolutePath.replace(".scala", ".class");
 
     return new ResourceFile(classAbsolutePath);
   }
