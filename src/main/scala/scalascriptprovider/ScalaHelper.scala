@@ -4,34 +4,29 @@
 
 package scalascriptprovider
 
-import scala.tools.nsc.{MainClass, CompilerCommand, Settings}
-import scala.tools.nsc.reporters.StoreReporter
+import dotty.tools.dotc.Driver
+import dotty.tools.dotc.reporting.{Diagnostic, ConsoleReporter}
 import java.util.function.Consumer
 
-class ScalaHelper {
-    def compile(errorFn: Consumer[java.lang.String], outputDirectory: String, sourcePath: String, classPath: String, sourceFileName: String): Boolean = {
-        val settings = new Settings()
-
-        val args = List("-g:source",
+class ScalaHelper:
+    def compile(errorFn: Consumer[java.lang.String], outputDirectory: String, sourcePath: String, classPath: String, sourceFileName: String): Boolean =
+        val args = Array(
+            "-g:source",
             "-d", outputDirectory,
             "-sourcepath", sourcePath,
             "-classpath", classPath,
-            sourceFileName)
+            sourceFileName
+        )
 
-        val command = new CompilerCommand(args.toList, settings)
-        val reporter = new scala.tools.nsc.reporters.StoreReporter
-        val compiler = new scala.tools.nsc.Global(settings, reporter)
-        val run = new compiler.Run()
-        run.compile(command.files)
+        val driver = new Driver
+        val reporter = new ConsoleReporter
+        val run = driver.process(args, reporter)
 
-        def infoToString(info: reporter.Info): String = {
-            s"${info.severity}: " + scala.reflect.internal.util.Position.formatMessage(info.pos, info.msg + "\n", true) + "\n"
-        }
+        def diagnosticToString(diag: Diagnostic): String =
+            s"${diag.level}: ${diag.message} at ${diag.pos.toString}\n"
 
-        if (reporter.hasErrors) {
+        if reporter.hasErrors then
             errorFn.accept("Error(s) while compiling scala script:")
-            reporter.infos.foreach(i => errorFn.accept (infoToString (i)))
-        }
+            reporter.allErrors.foreach(d => errorFn.accept(diagnosticToString(d)))
+
         !reporter.hasErrors
-    }
-}

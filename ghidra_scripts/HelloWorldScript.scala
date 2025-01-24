@@ -5,7 +5,6 @@
 
 import ghidra.app.script.GhidraScript
 
-class HelloWorldScript extends GhidraScript {
+class HelloWorldScript extends GhidraScript:
 
-  override def run() = println("Hello world, I'm written in Scala!")
-}
+  override def run() = println("Hello world, I'm written in Scala 3!")

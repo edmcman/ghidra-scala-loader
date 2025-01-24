@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.scala-lang', name: 'scala-compiler', version: '2.12.18'
+    implementation group: 'org.scala-lang', name: 'scala3-compiler_3', version: '3.3.4'
 }
 
 // Need to compile scala and java jointly so Java class can call ScalaHelper

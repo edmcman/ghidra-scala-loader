@@ -7,11 +7,11 @@ import ghidra.program.model.listing.Function
 import ghidra.program.model.address.AddressSetView
 import ghidra.program.model.symbol.Reference
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.*
 
-class PopularFunctions extends GhidraScript {
+class PopularFunctions extends GhidraScript:
 
-  override def run() = {
+  override def run() =
     val p = getCurrentProgram
     val refmgr = p.getReferenceManager
     getCurrentProgram.getFunctionManager
@@ -30,5 +30,3 @@ class PopularFunctions extends GhidraScript {
       .sortWith(_._2 > _._2)
       .take(20)
       .foreach{case (f,cnt) => println(s"Function ${f.getName} (${f.getEntryPoint}) is referenced $cnt times")}
-  }
-}

@@ -4,15 +4,14 @@
 
 import ghidra.app.script.GhidraScript
 import ghidra.app.decompiler._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.*
 
-class PrintHighPCode extends GhidraScript {
+class PrintHighPCode extends GhidraScript:
 
-  override def run() = {
+  override def run() =
     val ifc = new DecompInterface
-    if (!ifc.openProgram(currentProgram)) {
+    if !ifc.openProgram(currentProgram) then
       throw new DecompileException("Decompiler", "Unable to initialize: " + ifc.getLastMessage)
-    }
 
     ifc.setSimplificationStyle("decompiler")
 
@@ -21,13 +20,9 @@ class PrintHighPCode extends GhidraScript {
 
     val hfblocks = hf.getBasicBlocks.asScala
 
-    hfblocks.foreach (block => {
+    hfblocks.foreach (block =>
       println(s"Beginning of ${block.toString}")
-      block.getIterator.asScala.foreach (inst => {
+      block.getIterator.asScala.foreach (inst =>
         println(inst.toString)
-      })
-    })
-
-  }
-}
-
+      )
+    )

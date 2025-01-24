@@ -8,15 +8,14 @@ import ghidra.app.script.GhidraScript
 
 import ghidra.program.model.pcode._
 
-class FuncParams extends GhidraScript {
+class FuncParams extends GhidraScript:
 
-  override def run() = {
+  override def run() =
     println("Hello world, I'm written in Scala...!")
 
     val ifc = new DecompInterface
-    if (!ifc.openProgram(currentProgram)) {
+    if !ifc.openProgram(currentProgram) then
       throw new DecompileException("Decompiler", "Unable to initialize: " + ifc.getLastMessage)
-    }
 
     val res = ifc.decompileFunction(currentProgram.getFunctionManager.getFunctionContaining(currentAddress), 60, null)
     val hf = res.getHighFunction
@@ -27,5 +26,3 @@ class FuncParams extends GhidraScript {
       .map(_.getStorage.toString).mkString(", ")
 
     println(s"Function ${hf.getFunction.getName}: ${storage}")
-  }
-}

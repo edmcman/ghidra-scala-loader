@@ -7,12 +7,11 @@ import ghidra.program.model.listing.Function
 import ghidra.program.model.address.AddressSetView
 import ghidra.program.model.symbol.Reference
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.*
 
-class InstructionOps extends GhidraScript {
+class InstructionOps extends GhidraScript:
 
-  override def run() = {
-
+  override def run() =
 
     println("Starting InstructionOps script")
     
@@ -23,12 +22,12 @@ class InstructionOps extends GhidraScript {
 
     val l = getCurrentProgram.getListing
 
-    funcs.foreach(f => {
+    funcs.foreach(f =>
       println(s"Function ${f.getName}")
-      l.getInstructions(f.getBody, true).forEach(i => {
+      l.getInstructions(f.getBody, true).forEach(i =>
         val numops = i.getNumOperands
         println(s" Insn: ${i} has ${numops} operands")
-        (0 to numops-1).foreach(opnum => {
+        (0 to numops-1).foreach(opnum =>
           println(s"  Operand ${opnum} ${i.getDefaultOperandRepresentation(opnum)}")
           //println(s"  Operand ${opnum} is ${i.getOpObjects(opnum)}")
           val reftype = i.getOperandRefType(opnum)
@@ -36,8 +35,6 @@ class InstructionOps extends GhidraScript {
           val optype = i.getOperandType(opnum)
           val optypestr = ghidra.program.model.lang.OperandType.toString(optype)
           println(s"  Operand ${opnum} op type ${optypestr}")
-        })
-      })
-    })
-  }
-}
+        )
+      )
+    )

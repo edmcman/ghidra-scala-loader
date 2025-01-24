@@ -26,10 +26,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.net.URLClassLoader;
 
-import scala.collection.JavaConversions;
-import scala.tools.nsc.MainClass;
-import scala.tools.nsc.Settings;
-import scala.tools.nsc.CompilerCommand;
+import scala.jdk.CollectionConverters;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -102,6 +99,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 				"Error during class initialization: " + e.getException(), e.getException());
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new GhidraScriptLoadException("Unexpected error: " + e);
 		}
 
