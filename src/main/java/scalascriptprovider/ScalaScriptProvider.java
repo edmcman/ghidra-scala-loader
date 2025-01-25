@@ -26,10 +26,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.net.URLClassLoader;
 
-import scala.collection.JavaConversions;
-import scala.tools.nsc.MainClass;
-import scala.tools.nsc.Settings;
-import scala.tools.nsc.CompilerCommand;
+import scala.jdk.CollectionConverters;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -54,7 +51,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 
   static ResourceFile getClassFileByResourceFile(ResourceFile sourceFile, String rawName) {
     String javaAbsolutePath = sourceFile.getAbsolutePath();
-    String classAbsolutePath = javaAbsolutePath.replace(".java", ".class");
+    String classAbsolutePath = javaAbsolutePath.replace(".scala", ".class");
 
     return new ResourceFile(classAbsolutePath);
   }
@@ -90,8 +87,8 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 					sourceFile.getName() + " does not.");  
     }
 		catch (ClassNotFoundException e) {
-			throw new GhidraScriptLoadException("The class could not be found. " +
-				"It must be the public class of the .java file: " + e.getMessage(), e);
+			throw new GhidraScriptLoadException("The class " + e.getMessage() + " could not be found. " +
+				"Make sure the primary class in " + sourceFile + " is named " + e.getMessage() + ".", e);
 		}
 		catch (NoClassDefFoundError e) {
 			throw new GhidraScriptLoadException("The class could not be found or loaded, " +
@@ -102,6 +99,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
 				"Error during class initialization: " + e.getException(), e.getException());
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new GhidraScriptLoadException("Unexpected error: " + e);
 		}
 
@@ -156,29 +154,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
     return helper.compile(msg -> writer.println(msg), outputDirectory, getSourcePath(), getClassPath(), sourceFile.getAbsolutePath());
   }
 
-  private List<Class<?>> getParentClasses(ResourceFile scriptSourceFile) {
-
-    Class<?> scriptClass = getScriptClass(scriptSourceFile);
-    if (scriptClass == null) {
-      return null; // special signal that there was a problem
-    }
-
-    List<Class<?>> parentClasses = new ArrayList<>();
-    Class<?> superClass = scriptClass.getSuperclass();
-    while (superClass != null) {
-      if (superClass.equals(GhidraScript.class)) {
-        break; // not interested in the built-in classes
-      }
-      else if (superClass.equals(HeadlessScript.class)) {
-        break; // not interested in the built-in classes
-      }
-      parentClasses.add(superClass);
-      superClass = superClass.getSuperclass();
-    }
-    return parentClasses;
-  }
-
-  private Class<?> getScriptClass(ResourceFile scriptSourceFile) {
+  private Class<?> getScriptClass(ResourceFile scriptSourceFile) throws ClassNotFoundException {
     String clazzName = GhidraScriptUtil.getBaseName(scriptSourceFile);
     try {
       URL classURL = outputDir(scriptSourceFile).getFile(false).toURI().toURL();
@@ -188,6 +164,7 @@ public class ScalaScriptProvider extends GhidraScriptProvider {
     }
     catch (NoClassDefFoundError | ClassNotFoundException e) {
       Msg.error(this, "Unable to find class file for script file: " + scriptSourceFile, e);
+      throw e;
     }
     catch (MalformedURLException e) {
       Msg.error(this, "Malformed URL exception:", e);
