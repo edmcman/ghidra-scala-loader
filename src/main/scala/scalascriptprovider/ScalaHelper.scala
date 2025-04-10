@@ -11,7 +11,6 @@ import java.util.function.Consumer
 class ScalaHelper:
     def compile(errorFn: Consumer[java.lang.String], outputDirectory: String, sourcePath: String, classPath: String, sourceFileName: String): Boolean =
         val args = Array(
-            "-g:source",
             "-d", outputDirectory,
             "-sourcepath", sourcePath,
             "-classpath", classPath,
