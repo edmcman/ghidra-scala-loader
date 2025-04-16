@@ -9,7 +9,7 @@ schedules:
 # I wish there was a better way of doing this but shields.io removed their
 # filter support for json path queries
 variables:
-  latest_ghidra: '11.3.1'
+  latest_ghidra: '11.3.2'
 
 jobs:
 - job: Build_Ghidra_Plugin
@@ -71,6 +71,10 @@ jobs:
       ghidra1131:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.3.1_build/ghidra_11.3.1_PUBLIC_20250219.zip"
         ghidraVersion: "11.3.1"
+        useJava21: true
+      ghidra1132:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.3.2_build/ghidra_11.3.2_PUBLIC_20250415.zip"
+        ghidraVersion: "11.3.2"
         useJava21: true
   pool:
     vmImage: 'Ubuntu-22.04'
