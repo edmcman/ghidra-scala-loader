@@ -142,6 +142,7 @@ jobs:
   - bash: |
       set -ex
       cd ghidra
+      pip install --upgrade pip
       gradle --build-cache -I gradle/support/fetchDependencies.gradle
       gradle --build-cache buildGhidra
       mkdir -p $WS/zip
