@@ -9,7 +9,7 @@ schedules:
 # I wish there was a better way of doing this but shields.io removed their
 # filter support for json path queries
 variables:
-  latest_ghidra: '11.4.2'
+  latest_ghidra: '12.0.1'
 
 jobs:
 - job: Build_Ghidra_Plugin
@@ -91,6 +91,10 @@ jobs:
       ghidra12:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0_build/ghidra_12.0_PUBLIC_20251205.zip"
         ghidraVersion: "12.0"
+        useJava21: true
+      ghidra1201:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.1_build/ghidra_12.0.1_PUBLIC_20260114.zip"
+        ghidraVersion: "12.0.1"
         useJava21: true
   pool:
     vmImage: 'Ubuntu-22.04'
@@ -178,13 +182,13 @@ jobs:
       WS: $(Pipeline.Workspace)
   - script: gradle --stop
   - publish: dist/
-  - task: GitHubRelease@0
+  - task: GitHubRelease@1
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
     inputs:
       gitHubConnection: github.com_edmcman
       repositoryName: $(Build.Repository.Name)
       action: delete
-      tagSource: manual
+      tagSource: userSpecifiedTag
       tag: ghidra-$(ghidraVersion)
     continueOnError: true
   - task: DownloadSecureFile@1
@@ -208,14 +212,14 @@ jobs:
       SSH_AUTH_SOCK: /tmp/ssh_agent.sock
     continueOnError: true
     displayName: Delete old git tag ghidra-$(ghidraVersion)
-  - task: GitHubRelease@0
+  - task: GitHubRelease@1
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
     inputs:
       gitHubConnection: github.com_edmcman
       repositoryName: $(Build.Repository.Name)
       action: create
       target: $(Build.SourceVersion)
-      tagSource: manual
+      tagSource: userSpecifiedTag
       tag: ghidra-$(ghidraVersion)
       title: Ghidra Plugin for Ghidra $(ghidraVersion)
       assets: dist/*.zip
