@@ -182,13 +182,13 @@ jobs:
       WS: $(Pipeline.Workspace)
   - script: gradle --stop
   - publish: dist/
-  - task: GitHubRelease@0
+  - task: GitHubRelease@1
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
     inputs:
       gitHubConnection: github.com_edmcman
       repositoryName: $(Build.Repository.Name)
       action: delete
-      tagSource: manual
+      tagSource: userSpecifiedTag
       tag: ghidra-$(ghidraVersion)
     continueOnError: true
   - task: DownloadSecureFile@1
@@ -212,14 +212,14 @@ jobs:
       SSH_AUTH_SOCK: /tmp/ssh_agent.sock
     continueOnError: true
     displayName: Delete old git tag ghidra-$(ghidraVersion)
-  - task: GitHubRelease@0
+  - task: GitHubRelease@1
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
     inputs:
       gitHubConnection: github.com_edmcman
       repositoryName: $(Build.Repository.Name)
       action: create
       target: $(Build.SourceVersion)
-      tagSource: manual
+      tagSource: userSpecifiedTag
       tag: ghidra-$(ghidraVersion)
       title: Ghidra Plugin for Ghidra $(ghidraVersion)
       assets: dist/*.zip
