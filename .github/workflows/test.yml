@@ -42,6 +42,7 @@ jobs:
 
       - name: Run HelloWorldScript via analyzeHeadless
         run: |
+          mkdir -p /tmp/ghidra_project
           "$GHIDRA_INSTALL_DIR/support/analyzeHeadless" \
             /tmp/ghidra_project TestProject \
             -import /bin/ls \
