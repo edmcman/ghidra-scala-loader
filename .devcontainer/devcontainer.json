@@ -3,7 +3,7 @@
 {
 	"name": "Java",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/java:0-17",
+	"image": "mcr.microsoft.com/devcontainers/java:1-21",
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
@@ -17,10 +17,10 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "test -f ghidra_10.4_PUBLIC_20230928.zip || (wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.4_build/ghidra_10.4_PUBLIC_20230928.zip && unzip ghidra_10.4_PUBLIC_20230928.zip)",
+	"postCreateCommand": "test -f ghidra_12.1_PUBLIC_20260513.zip || (wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1_build/ghidra_12.1_PUBLIC_20260513.zip && unzip ghidra_12.1_PUBLIC_20260513.zip)",
 
 	"remoteEnv": {
-		"GHIDRA_INSTALL_DIR": "/workspaces/ghidra-scala-loader/ghidra_10.4_PUBLIC"
+		"GHIDRA_INSTALL_DIR": "/workspaces/ghidra-scala-loader/ghidra_12.1_PUBLIC"
 	},
 	"customizations": {
 		"vscode": {
