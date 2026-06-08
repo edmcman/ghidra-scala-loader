@@ -17,10 +17,10 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "test -f ghidra_12.1_PUBLIC_20260513.zip || (wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1_build/ghidra_12.1_PUBLIC_20260513.zip && unzip ghidra_12.1_PUBLIC_20260513.zip)",
+	"postCreateCommand": "test -f ghidra_12.1.2_PUBLIC_20260605.zip || (wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip && unzip ghidra_12.1.2_PUBLIC_20260605.zip)",
 
 	"remoteEnv": {
-		"GHIDRA_INSTALL_DIR": "/workspaces/ghidra-scala-loader/ghidra_12.1_PUBLIC"
+		"GHIDRA_INSTALL_DIR": "/workspaces/ghidra-scala-loader/ghidra_12.1.2_PUBLIC"
 	},
 	"customizations": {
 		"vscode": {
