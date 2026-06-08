@@ -5,7 +5,7 @@ on:
   pull_request:
 
 env:
-  GHIDRA_VERSION: "12.1"
+  GHIDRA_VERSION: "12.1.2"
 
 jobs:
   test:
