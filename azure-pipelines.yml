@@ -15,6 +15,7 @@ jobs:
 - job: Build_Ghidra_Plugin
   variables:
     GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+    javaVersion: 17
   strategy:
     matrix:
       ghidra-git:
