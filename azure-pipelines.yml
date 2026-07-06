@@ -15,11 +15,12 @@ jobs:
 - job: Build_Ghidra_Plugin
   variables:
     GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+    javaVersion: 17
   strategy:
     matrix:
       ghidra-git:
         ghidraVersion: "master"
-        useJava21: true
+        javaVersion: 25
       ghidra1022:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.2.2_build/ghidra_10.2.2_PUBLIC_20221115.zip"
         ghidraVersion: "10.2.2"
@@ -59,77 +60,75 @@ jobs:
       ghidra112:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.2_build/ghidra_11.2_PUBLIC_20240926.zip"
         ghidraVersion: "11.2"
-        useJava21: true
+        javaVersion: 21
       ghidra1121:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.2.1_build/ghidra_11.2.1_PUBLIC_20241105.zip"
         ghidraVersion: "11.2.1"
-        useJava21: true
+        javaVersion: 21
       ghidra113:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.3_build/ghidra_11.3_PUBLIC_20250205.zip"
         ghidraVersion: "11.3"
-        useJava21: true
+        javaVersion: 21
       ghidra1131:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.3.1_build/ghidra_11.3.1_PUBLIC_20250219.zip"
         ghidraVersion: "11.3.1"
-        useJava21: true
+        javaVersion: 21
       ghidra1132:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.3.2_build/ghidra_11.3.2_PUBLIC_20250415.zip"
         ghidraVersion: "11.3.2"
-        useJava21: true
+        javaVersion: 21
       ghidra114:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.4_build/ghidra_11.4_PUBLIC_20250620.zip"
         ghidraVersion: "11.4"
-        useJava21: true
+        javaVersion: 21
       ghidra1141:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.4.1_build/ghidra_11.4.1_PUBLIC_20250731.zip"
         ghidraVersion: "11.4.1"
-        useJava21: true
+        javaVersion: 21
       ghidra1142:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.4.2_build/ghidra_11.4.2_PUBLIC_20250826.zip"
         ghidraVersion: "11.4.2"
-        useJava21: true
+        javaVersion: 21
       ghidra12:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0_build/ghidra_12.0_PUBLIC_20251205.zip"
         ghidraVersion: "12.0"
-        useJava21: true
+        javaVersion: 21
       ghidra1201:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.1_build/ghidra_12.0.1_PUBLIC_20260114.zip"
         ghidraVersion: "12.0.1"
-        useJava21: true
+        javaVersion: 21
       ghidra1202:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.2_build/ghidra_12.0.2_PUBLIC_20260129.zip"
         ghidraVersion: "12.0.2"
-        useJava21: true
+        javaVersion: 21
       ghidra1203:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.3_build/ghidra_12.0.3_PUBLIC_20260210.zip"
         ghidraVersion: "12.0.3"
-        useJava21: true
+        javaVersion: 21
       ghidra1204:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.4_build/ghidra_12.0.4_PUBLIC_20260303.zip"
         ghidraVersion: "12.0.4"
-        useJava21: true
+        javaVersion: 21
       ghidra121:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1_build/ghidra_12.1_PUBLIC_20260513.zip"
         ghidraVersion: "12.1"
-        useJava21: true
+        javaVersion: 21
       ghidra1212:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip"
         ghidraVersion: "12.1.2"
-        useJava21: true
+        javaVersion: 21
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
 
-  - script: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_21_X64)"
-      echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_21_X64)/bin:$(PATH)"
-    displayName: "Use Java 21"
-    condition: and(succeeded(), variables['useJava21'])
-  - script: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_17_X64)"
-      echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_17_X64)/bin:$(PATH)"
-    displayName: "Use Java 17"
-    condition: and(succeeded(), not(variables['useJava21']))
+  - bash: |
+      set -e
+      varName="JAVA_HOME_${JAVA_VERSION:-17}_X64"
+      echo "##vso[task.setvariable variable=JAVA_HOME]${!varName}"
+      echo "##vso[task.setvariable variable=PATH]${!varName}/bin:$PATH"
+    displayName: "Use Java $(javaVersion)"
+    env:
+      JAVA_VERSION: $(javaVersion)
   - task: Cache@2
     condition: and(succeeded(), ne(variables['ghidraUrl'], ''))
     inputs:
