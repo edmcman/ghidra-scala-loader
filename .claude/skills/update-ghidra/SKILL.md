@@ -1,7 +1,6 @@
 ---
+name: update-ghidra
 description: Update the project for a new Ghidra version
-argument-hint: <version>
-allowed-tools: [Read, Edit, Write, Bash, WebSearch, WebFetch, Agent]
 ---
 
 # Update Ghidra to $ARGUMENTS
