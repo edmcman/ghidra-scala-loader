@@ -69,6 +69,14 @@ The Ghidra directory name comes from the ZIP: `ghidra_12.1_PUBLIC_20260513.zip` 
    grep -q "Hello world, I'm written in Scala 3!" /tmp/ghidra_test/output.log
    ```
 
-## Step 6: Report
+## Step 6: Commit and create PR
+
+Commit all changes on a branch named `ghidra-$ARGUMENTS`, push to `origin`, and open a PR to `edmcman/ghidra-scala-loader`. `dangerouslyDisableSandbox: true` is needed for the push (per this project's git-push credential constraint).
+
+## Step 7: Monitor PR checks
+
+Watch the CI checks on the PR (both the GitHub Actions workflow and the Azure Pipelines build show up as PR status checks) and report back when they complete. Use `gh pr checks <PR_NUMBER>` to check status. If a check fails, pull the logs (`gh run view <RUN_ID> --log-failed` for the Actions job, or the Azure Pipelines UI for that build) to diagnose.
+
+## Step 8: Report
 
 Summarize what was changed and whether the build/test passed. If there are source code compatibility issues with the new Ghidra version, report them.
