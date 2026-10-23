@@ -11,8 +11,8 @@ scripts written in Scala.  Just make sure their filename ends in
 # Compilation #
 
 If you want to build the extension yourself, make sure you have
-`gradle` installed, and then run
-`GHIDRA_INSTALL_DIR=/path/to/ghidra gradle buildExtension`.  If
+the JDK required by your Ghidra version installed, and then run
+`GHIDRA_INSTALL_DIR=/path/to/ghidra ./gradlew buildExtension`.  If
 all goes well, you should get a message like:
 
 ```
@@ -46,7 +46,10 @@ Console.
 
 # Requirements #
 
-This extension should work with JDK 17 or 21, but the prebuilt Github extensions
+Ghidra 12.2 requires JDK 25 and Gradle 9.1 or newer (provided by `./gradlew`).
+For older supported Ghidra releases, use JDK 17 or 21 and the Gradle version
+specified in their `Ghidra/application.properties` instead of the wrapper.
+The prebuilt GitHub extensions
 will only work with the JDK version required by the Ghidra version they are
 built for.  If you want to use a different JDK version, you will need to build
 the extension yourself.

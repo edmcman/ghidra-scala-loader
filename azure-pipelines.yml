@@ -9,7 +9,7 @@ schedules:
 # I wish there was a better way of doing this but shields.io removed their
 # filter support for json path queries
 variables:
-  latest_ghidra: '12.1.3'
+  latest_ghidra: '12.2'
 
 jobs:
 - job: Build_Ghidra_Plugin
@@ -121,6 +121,10 @@ jobs:
         ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.3_build/ghidra_12.1.3_PUBLIC_20260817.zip"
         ghidraVersion: "12.1.3"
         javaVersion: 21
+      ghidra122:
+        ghidraUrl: "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.2_build/ghidra_12.2_PUBLIC_20261016.zip"
+        ghidraVersion: "12.2"
+        javaVersion: 25
   pool:
     vmImage: 'Ubuntu-22.04'
   steps:
@@ -199,11 +203,25 @@ jobs:
     displayName: Download and build Ghidra from git part 2
   - bash: |
       set -ex
-      GHIDRA_INSTALL_DIR=$(find $WS -maxdepth 1 -type d -name 'ghidra_*') gradle --build-cache
+      gradleCommand=gradle
+      if [ "$JAVA_VERSION" -ge 25 ]; then
+        gradleCommand=./gradlew
+      fi
+      GHIDRA_INSTALL_DIR=$(find $WS -maxdepth 1 -type d -name 'ghidra_*') "$gradleCommand" --build-cache
     displayName: Build Ghidra plugin
     env:
       WS: $(Pipeline.Workspace)
-  - script: gradle --stop
+      JAVA_VERSION: $(javaVersion)
+  - bash: |
+      set -ex
+      gradleCommand=gradle
+      if [ "$JAVA_VERSION" -ge 25 ]; then
+        gradleCommand=./gradlew
+      fi
+      "$gradleCommand" --stop
+    displayName: Stop Gradle
+    env:
+      JAVA_VERSION: $(javaVersion)
   - publish: dist/
   - task: GitHubRelease@1
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
