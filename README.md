@@ -1,5 +1,5 @@
-[![Build Status](https://dev.azure.com/edmcman/ghidra-scala-loader/_apis/build/status/edmcman.ghidra-scala-loader?branchName=master)](https://dev.azure.com/edmcman/ghidra-scala-loader/_build/latest?definitionId=4&branchName=master) 
-![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Frefs%2Fheads%2Fmaster%2Fazure-pipelines.yml&query=%24.variables%5B'latest_ghidra'%5D&label=Latest%20Ghidra%20version)
+[![CI](https://github.com/edmcman/ghidra-scala-loader/actions/workflows/test.yml/badge.svg)](https://github.com/edmcman/ghidra-scala-loader/actions/workflows/test.yml)
+![Latest Ghidra version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Fmaster%2F.github%2Fghidra-versions.json&query=%24.latest&label=Latest%20Ghidra%20version)
 
 # Introduction #
 
@@ -30,6 +30,10 @@ newly built extension.
 
 # Installation #
 
+Download the extension ZIP matching your Ghidra version from the
+[GitHub releases](https://github.com/edmcman/ghidra-scala-loader/releases),
+or build it using the instructions above.
+
 Start Ghidra, and in the initial window (i.e., _not_ the Code
 Browser), open the `File` menu, and select `Install Extensions`.
 Click the small plus icon in the top right of the window, and select
@@ -56,5 +60,35 @@ the extension yourself.
 
 # Supported Versions #
 
-![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Frefs%2Fheads%2Fmaster%2Fazure-pipelines.yml&query=%24.jobs%5B0%5D%5B%22strategy%22%5D%5B%22matrix%22%5D%5B*%5D.ghidraVersion&label=Supported%20Ghidra%20versions)
+![Supported Ghidra versions](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedmcman%2Fghidra-scala-loader%2Fmaster%2F.github%2Fghidra-versions.json&query=%24.include%5B*%5D.ghidra&label=Supported%20Ghidra%20versions)
 
+The build matrix is maintained in [.github/ghidra-versions.json](.github/ghidra-versions.json).
+CI builds and runs `HelloWorldScript.scala` in headless Ghidra for every listed
+version, including upstream `master`, on branch pushes, pull requests to
+`master`, and Sundays at 00:00 UTC. CI can also be run manually. Each run
+provides extension ZIPs and diagnostic logs as workflow artifacts.
+
+# Releases #
+
+Push a project version tag in `vMAJOR.MINOR.PATCH` format (for example, `v1.0.0`) to build and test the tagged
+commit across the complete matrix. Once all targets pass, GitHub Actions
+publishes one release named after the tag containing all extension ZIPs.
+The release notes identify the upstream Ghidra commit used for the `master`
+build. The workflow filters for version-shaped tags and validates the exact
+format before building. Version components must be nonnegative integers without
+leading zeros; suffixes are not accepted. Other tags and branch builds do not publish.
+Published ZIP filenames identify their Ghidra target and stay the same across
+reruns, which replace matching assets without deleting the tag.
+Uploads are staged in a draft release and published only after every upload
+succeeds. Updating an existing release temporarily unpublishes it. If uploading
+fails, the release stays in draft until a successful rerun; partial bundles are
+not published.
+Existing `ghidra-<version>` releases remain available but are no longer refreshed.
+
+Publishing uses the built-in `GITHUB_TOKEN`; no deploy key or extra secret is
+required. Only the publishing job has permission to write repository contents.
+
+When switching over, disable the old pipeline in Azure DevOps and replace any
+required Azure build status in GitHub branch protection with the new Actions
+checks after the first successful CI run. Removing the Azure YAML alone does
+not disable its service integration.
