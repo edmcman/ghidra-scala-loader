@@ -46,8 +46,11 @@ jobs:
           PYNOTES
             gh release edit "$RELEASE_TAG" --notes-file notes.md
           else
+            printf '\n' >> notes.md
+            gh api --method POST "repos/$GH_REPO/releases/generate-notes" \
+              -f tag_name="$RELEASE_TAG" --jq .body >> notes.md
             gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
-              --generate-notes --notes-file notes.md
+              --notes-file notes.md
           fi
           shopt -s nullglob
           assets=(artifacts/extension-*/*.zip)
