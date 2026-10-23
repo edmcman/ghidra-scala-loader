@@ -1,0 +1,55 @@
+name: Release on tag
+
+on:
+  push:
+    tags: ['*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: extension-*
+          path: artifacts
+      - name: Create release and upload extensions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          source_commit=$(cat artifacts/extension-master/ghidra-source-commit.txt)
+          # shellcheck disable=SC2016
+          printf 'The upstream master extension was built against Ghidra commit `%s`.\n' "$source_commit" > notes.md
+          if gh release view "$RELEASE_TAG" --json body --jq .body > existing-notes.md; then
+            python3 - <<'PYNOTES'
+          from pathlib import Path
+          import re
+          existing = Path('existing-notes.md').read_text()
+          metadata = Path('notes.md').read_text()
+          existing = re.sub(r'^The upstream master extension was built against Ghidra commit `[^`]+`\.\n?', '', existing)
+          Path('notes.md').write_text(metadata + existing)
+          PYNOTES
+            gh release edit "$RELEASE_TAG" --notes-file notes.md
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+              --generate-notes --notes-file notes.md
+          fi
+          shopt -s nullglob
+          assets=(artifacts/extension-*/*.zip)
+          test "${#assets[@]}" -gt 0
+          gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber

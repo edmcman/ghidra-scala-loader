@@ -1,0 +1,135 @@
+name: Build and test Ghidra extensions
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.targets.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: targets
+        name: Read supported Ghidra versions
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          targets = json.loads(Path('.github/ghidra-versions.json').read_text())
+          print('matrix=' + json.dumps({'include': targets['include']}))
+          PY
+
+  build:
+    needs: matrix
+    name: Ghidra ${{ matrix.ghidra }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.targets) }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ matrix.gradle }}
+      - name: Create log directory
+        run: |
+          mkdir -p "$RUNNER_TEMP/scala-loader-logs"
+          echo "LOG_DIR=$RUNNER_TEMP/scala-loader-logs" >> "$GITHUB_ENV"
+      - name: Cache released Ghidra archive
+        if: matrix.ghidra != 'master'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/ghidra-zip
+          key: ghidra-zip-${{ runner.os }}-${{ matrix.ghidra }}
+      - name: Download and extract released Ghidra
+        if: matrix.ghidra != 'master'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GHIDRA_VERSION: ${{ matrix.ghidra }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/ghidra-zip" "$RUNNER_TEMP/ghidra-install"
+          if ! compgen -G "$RUNNER_TEMP/ghidra-zip/ghidra*.zip" > /dev/null; then
+            gh release download "Ghidra_${GHIDRA_VERSION}_build" \
+              --repo NationalSecurityAgency/ghidra --pattern 'ghidra*.zip' \
+              --dir "$RUNNER_TEMP/ghidra-zip"
+          fi
+          unzip -q "$RUNNER_TEMP"/ghidra-zip/ghidra*.zip -d "$RUNNER_TEMP/ghidra-install"
+      - name: Check out upstream Ghidra
+        if: matrix.ghidra == 'master'
+        run: git clone --depth 1 --branch master https://github.com/NationalSecurityAgency/ghidra.git "$RUNNER_TEMP/upstream-ghidra"
+      - name: Identify upstream dependency configuration
+        if: matrix.ghidra == 'master'
+        id: upstream
+        run: |
+          digest=$(sha256sum "$RUNNER_TEMP/upstream-ghidra/gradle/support/fetchDependencies.gradle" | cut -d ' ' -f 1)
+          echo "dependencies=$digest" >> "$GITHUB_OUTPUT"
+      - name: Set up Python for upstream build
+        if: matrix.ghidra == 'master'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install upstream build tools
+        if: matrix.ghidra == 'master'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bison flex g++ make unzip
+      - name: Cache upstream Ghidra dependencies
+        if: matrix.ghidra == 'master'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/upstream-ghidra/dependencies
+          key: ghidra-dependencies-${{ runner.os }}-${{ steps.upstream.outputs.dependencies }}
+      - name: Build upstream Ghidra distribution
+        if: matrix.ghidra == 'master'
+        working-directory: ${{ runner.temp }}/upstream-ghidra
+        run: |
+          git rev-parse HEAD > "$LOG_DIR/ghidra-source-commit.txt"
+          gradle --no-daemon --build-cache -I gradle/support/fetchDependencies.gradle 2>&1 | tee "$LOG_DIR/ghidra-dependencies.log"
+          gradle --no-daemon --build-cache buildGhidra 2>&1 | tee "$LOG_DIR/ghidra-build.log"
+          mkdir -p "$RUNNER_TEMP/ghidra-install"
+          unzip -q build/dist/ghidra*.zip -d "$RUNNER_TEMP/ghidra-install"
+      - name: Locate Ghidra installation
+        run: |
+          mapfile -t installations < <(find "$RUNNER_TEMP/ghidra-install" -mindepth 1 -maxdepth 1 -type d -name 'ghidra_*')
+          test "${#installations[@]}" -eq 1
+          echo "GHIDRA_INSTALL_DIR=${installations[0]}" >> "$GITHUB_ENV"
+      - name: Build and install extension
+        run: gradle --no-daemon --build-cache install 2>&1 | tee "$LOG_DIR/extension-build.log"
+      - name: Run Scala script in headless Ghidra
+        run: bash .github/scripts/test-headless.sh
+      - name: Stage extension artifact
+        env:
+          GHIDRA_VERSION: ${{ matrix.ghidra }}
+        run: |
+          mkdir -p artifact
+          cp dist/*.zip "artifact/ghidra_${GHIDRA_VERSION}_ghidra-scala-loader.zip"
+          if [[ "$GHIDRA_VERSION" == master ]]; then
+            cp "$LOG_DIR/ghidra-source-commit.txt" artifact/
+          fi
+      - name: Upload extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-${{ matrix.ghidra }}
+          path: artifact/*
+          if-no-files-found: error
+          overwrite: true
+      - name: Upload diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.ghidra }}
+          path: ${{ runner.temp }}/scala-loader-logs/
+          if-no-files-found: ignore
+          overwrite: true
