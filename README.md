@@ -70,13 +70,19 @@ provides extension ZIPs and diagnostic logs as workflow artifacts.
 
 # Releases #
 
-Push a project version tag (for example, `v1.0.0`) to build and test the tagged
+Push a project version tag in `vMAJOR.MINOR.PATCH` format (for example, `v1.0.0`) to build and test the tagged
 commit across the complete matrix. Once all targets pass, GitHub Actions
 publishes one release named after the tag containing all extension ZIPs.
 The release notes identify the upstream Ghidra commit used for the `master`
-build. Any pushed tag triggers this workflow; branch builds do not publish.
+build. The workflow filters for version-shaped tags and validates the exact
+format before building. Version components must be nonnegative integers without
+leading zeros; suffixes are not accepted. Other tags and branch builds do not publish.
 Published ZIP filenames identify their Ghidra target and stay the same across
 reruns, which replace matching assets without deleting the tag.
+Uploads are staged in a draft release and published only after every upload
+succeeds. Updating an existing release temporarily unpublishes it. If uploading
+fails, the release stays in draft until a successful rerun; partial bundles are
+not published.
 Existing `ghidra-<version>` releases remain available but are no longer refreshed.
 
 Publishing uses the built-in `GITHUB_TOKEN`; no deploy key or extra secret is

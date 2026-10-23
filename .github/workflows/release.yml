@@ -2,7 +2,7 @@ name: Release on tag
 
 on:
   push:
-    tags: ['*']
+    tags: ['v[0-9]*.[0-9]*.[0-9]*']
 
 permissions:
   contents: read
@@ -12,11 +12,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate project version tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo '::error::Release tags must use vMAJOR.MINOR.PATCH (for example, v1.0.0).'
+            exit 1
+          fi
+
   build:
+    needs: validate-tag
     uses: ./.github/workflows/build.yml
 
   publish:
-    needs: build
+    needs: [validate-tag, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -25,13 +39,16 @@ jobs:
         with:
           pattern: extension-*
           path: artifacts
-      - name: Create release and upload extensions
+      - name: Stage extensions in draft and publish complete release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
+          shopt -s nullglob
+          assets=(artifacts/extension-*/*.zip)
+          test "${#assets[@]}" -gt 0
           source_commit=$(cat artifacts/extension-master/ghidra-source-commit.txt)
           # shellcheck disable=SC2016
           printf 'The upstream master extension was built against Ghidra commit `%s`.\n' "$source_commit" > notes.md
@@ -44,15 +61,14 @@ jobs:
           existing = re.sub(r'^The upstream master extension was built against Ghidra commit `[^`]+`\.\n?', '', existing)
           Path('notes.md').write_text(metadata + existing)
           PYNOTES
-            gh release edit "$RELEASE_TAG" --notes-file notes.md
+            # Hide an existing release before changing any assets. Failures leave it in draft.
+            gh release edit "$RELEASE_TAG" --draft=true --notes-file notes.md
           else
             printf '\n' >> notes.md
             gh api --method POST "repos/$GH_REPO/releases/generate-notes" \
               -f tag_name="$RELEASE_TAG" --jq .body >> notes.md
-            gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+            gh release create "$RELEASE_TAG" --draft --verify-tag --title "$RELEASE_TAG" \
               --notes-file notes.md
           fi
-          shopt -s nullglob
-          assets=(artifacts/extension-*/*.zip)
-          test "${#assets[@]}" -gt 0
           gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
+          gh release edit "$RELEASE_TAG" --draft=false
